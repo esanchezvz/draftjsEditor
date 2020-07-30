@@ -3,7 +3,6 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
 import BlockStylesToolbar from './BlockStylesToolbar';
-import InlineStylesToolbar from './InlineStylesToolbar';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,12 +20,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const Toolbar = ({ toggleBlock, toggleInlineStyle, editorState }: Props) => {
+const Toolbar = ({ toggleBlock, editorState }: Props) => {
   const classes = useStyles();
-
-  const handleInlineToggle = (style: string) => {
-    toggleInlineStyle(style);
-  };
 
   const handleBlockToggle = (style: string) => toggleBlock(style);
 
@@ -34,14 +29,13 @@ const Toolbar = ({ toggleBlock, toggleInlineStyle, editorState }: Props) => {
     <Paper elevation={0} className={classes.paper}>
       <BlockStylesToolbar handleBlockToggle={handleBlockToggle} editorState={editorState} />
       <Divider flexItem orientation='vertical' className={classes.divider} />
-      <InlineStylesToolbar handleInlineToggle={handleInlineToggle} editorState={editorState} />
     </Paper>
   );
 };
 
 interface Props {
   toggleBlock: (x: string) => void;
-  toggleInlineStyle: (x: string) => void;
+  // toggleInlineStyle: (x: string) => void;
   editorState: EditorState;
 }
 

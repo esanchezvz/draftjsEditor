@@ -1,26 +1,43 @@
 import { Component, createRef } from 'react';
 import {
   EditorState,
+  ContentState,
   Editor as DraftJsEditor,
   RichUtils,
+  CompositeDecorator,
   getDefaultKeyBinding,
   DraftEditorCommand,
   ContentBlock,
+  convertToRaw,
+  getVisibleSelectionRect,
 } from 'draft-js';
 
 import Toolbar from './Toolbar';
+import { handleTextSelection } from './utils';
+import InlineStylesToolbar from './InlineStylesToolbar';
 
 class Editor extends Component<Props, State> {
   private editorRef = createRef<DraftJsEditor>();
+  private decorator: CompositeDecorator;
 
   constructor(props: Props) {
     super(props);
-    this.state = { editorState: EditorState.createEmpty(), mounted: false };
+    this.decorator = new CompositeDecorator([
+      {
+        strategy: this.findLinkEntities,
+        component: Link,
+      },
+    ]);
+    this.state = {
+      editorState: EditorState.createEmpty(this.decorator),
+      mounted: false,
+      focused: false,
+    };
   }
 
   componentDidMount() {
     this.setState({ mounted: true });
-    setTimeout(() => this.focusEditor(), 10);
+    setTimeout(() => this.focusEditor(), 0);
   }
 
   onChange = (editorState: EditorState) => this.setState({ editorState });
@@ -64,8 +81,19 @@ class Editor extends Component<Props, State> {
     }
   };
 
+  findLinkEntities = (
+    contentBlock: ContentBlock,
+    callback: (start: number, end: number) => void,
+    contentState: ContentState,
+  ) => {
+    contentBlock.findEntityRanges((character) => {
+      const entityKey = character.getEntity();
+      return entityKey !== null && contentState.getEntity(entityKey).getType() === 'LINK';
+    }, callback);
+  };
+
   render() {
-    const { editorState, mounted } = this.state;
+    const { editorState, mounted, focused } = this.state;
 
     const contentState = editorState.getCurrentContent();
     let className = 'editor';
@@ -76,33 +104,46 @@ class Editor extends Component<Props, State> {
     }
 
     return mounted ? (
-      <section className='editor--root'>
-        <div className={className}>
-          <Toolbar
+      <div className={className}>
+        <Toolbar editorState={editorState} toggleBlock={(v: string) => this.toggleBlockType(v)} />
+        <DraftJsEditor
+          editorState={this.state.editorState}
+          onChange={this.onChange}
+          onBlur={() => this.setState({ focused: false })}
+          onFocus={() => this.setState({ focused: true })}
+          blockStyleFn={this.getBlockStyle}
+          handleKeyCommand={this.handleKeyCommand}
+          keyBindingFn={this.mapKeyToEditorCommand}
+          placeholder='No te hagas wey...'
+          ref={this.editorRef}
+          spellCheck
+        />
+        {handleTextSelection(editorState) && focused && (
+          <InlineStylesToolbar
             editorState={editorState}
-            toggleInlineStyle={(v: string) => this.toggleInlineStyle(v)}
-            toggleBlock={(v: string) => this.toggleBlockType(v)}
+            handleInlineToggle={this.toggleInlineStyle}
           />
-          <DraftJsEditor
-            editorState={this.state.editorState}
-            onChange={this.onChange}
-            blockStyleFn={this.getBlockStyle}
-            handleKeyCommand={this.handleKeyCommand}
-            keyBindingFn={this.mapKeyToEditorCommand}
-            placeholder='No te hagas wey...'
-            ref={this.editorRef}
-            spellCheck
-          />
-        </div>
-      </section>
+        )}
+      </div>
     ) : null;
   }
 }
+
+const Link = (props: any) => {
+  const { url } = props.contentState.getEntity(props.entityKey).getData();
+
+  return (
+    <a href={url} target='_blank' rel='noopener noreferrer' className='editor--link'>
+      {props.children}
+    </a>
+  );
+};
 
 interface Props {}
 interface State {
   editorState: EditorState;
   mounted: boolean;
+  focused: boolean;
 }
 
 export default Editor;
