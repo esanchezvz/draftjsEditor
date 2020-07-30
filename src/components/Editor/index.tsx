@@ -31,7 +31,6 @@ class Editor extends Component<Props, State> {
     this.state = {
       editorState: EditorState.createEmpty(this.decorator),
       mounted: false,
-      focused: false,
     };
   }
 
@@ -93,7 +92,7 @@ class Editor extends Component<Props, State> {
   };
 
   render() {
-    const { editorState, mounted, focused } = this.state;
+    const { editorState, mounted } = this.state;
 
     const contentState = editorState.getCurrentContent();
     let className = 'editor';
@@ -109,8 +108,6 @@ class Editor extends Component<Props, State> {
         <DraftJsEditor
           editorState={this.state.editorState}
           onChange={this.onChange}
-          onBlur={() => this.setState({ focused: false })}
-          onFocus={() => this.setState({ focused: true })}
           blockStyleFn={this.getBlockStyle}
           handleKeyCommand={this.handleKeyCommand}
           keyBindingFn={this.mapKeyToEditorCommand}
@@ -118,7 +115,7 @@ class Editor extends Component<Props, State> {
           ref={this.editorRef}
           spellCheck
         />
-        {handleTextSelection(editorState) && focused && (
+        {handleTextSelection(editorState) && (
           <InlineStylesToolbar
             editorState={editorState}
             handleInlineToggle={this.toggleInlineStyle}
@@ -143,7 +140,6 @@ interface Props {}
 interface State {
   editorState: EditorState;
   mounted: boolean;
-  focused: boolean;
 }
 
 export default Editor;
