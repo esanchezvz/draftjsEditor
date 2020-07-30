@@ -65,7 +65,7 @@ class Editor extends Component<Props, State> {
   };
 
   render() {
-    const { editorState } = this.state;
+    const { editorState, mounted } = this.state;
 
     const contentState = editorState.getCurrentContent();
     let className = 'editor';
@@ -75,7 +75,7 @@ class Editor extends Component<Props, State> {
       }
     }
 
-    return this.state.mounted ? (
+    return mounted ? (
       <section className='editor--root'>
         <div className={className}>
           <Toolbar
