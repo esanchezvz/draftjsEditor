@@ -8,8 +8,7 @@ import {
   getDefaultKeyBinding,
   DraftEditorCommand,
   ContentBlock,
-  convertToRaw,
-  getVisibleSelectionRect,
+  // convertToRaw,
 } from 'draft-js';
 
 import Toolbar from './Toolbar';
@@ -91,6 +90,22 @@ class Editor extends Component<Props, State> {
     }, callback);
   };
 
+  removeLink = () => {
+    const { editorState } = this.state;
+    const selection = editorState.getSelection();
+    this.onChange(RichUtils.toggleLink(editorState, selection, null));
+  };
+
+  addLink = (url: string) => {
+    const { editorState } = this.state;
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', { url });
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
+
+    this.onChange(RichUtils.toggleLink(newEditorState, newEditorState.getSelection(), entityKey));
+  };
+
   render() {
     const { editorState, mounted } = this.state;
 
@@ -111,14 +126,15 @@ class Editor extends Component<Props, State> {
           blockStyleFn={this.getBlockStyle}
           handleKeyCommand={this.handleKeyCommand}
           keyBindingFn={this.mapKeyToEditorCommand}
-          placeholder='No te hagas wey...'
+          placeholder='Deja de pendejear y ponte a escribir...'
           ref={this.editorRef}
           spellCheck
         />
         {handleTextSelection(editorState) && (
           <InlineStylesToolbar
             editorState={editorState}
-            focusEditor={this.focusEditor}
+            addLink={this.addLink}
+            removeLink={this.removeLink}
             handleInlineToggle={this.toggleInlineStyle}
           />
         )}

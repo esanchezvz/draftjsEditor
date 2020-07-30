@@ -97,7 +97,9 @@
   padding: 10px 20px;
 }
 
-.editor--typehead {
-  background-color: rgba(0, 0, 0, 0.12);
-  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+.editor--link {
+  color: red;
+  text-decoration: underline;
+  font-weight: bold;
+  text-decoration: none;
 }

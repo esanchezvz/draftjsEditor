@@ -9,9 +9,9 @@ import InsertLinkIcon from '@material-ui/icons/InsertLink';
 import { useTheme } from '@material-ui/core';
 
 import ToolbarItem from './ToolbarItem';
-import { urlRegex } from './utils';
+import { urlRegex, getCurrentEntity } from './utils';
 
-const InlineStylesToolbar = ({ editorState, handleInlineToggle, focusEditor }: Props) => {
+const InlineStylesToolbar = ({ editorState, handleInlineToggle, addLink, removeLink }: Props) => {
   const theme = useTheme();
 
   const targetRect = getVisibleSelectionRect(window);
@@ -40,11 +40,10 @@ const InlineStylesToolbar = ({ editorState, handleInlineToggle, focusEditor }: P
 
     if (!urlRegex.test(urlInput.url)) {
       setUrlInput((prev) => ({ ...prev, valid: false }));
-      // alert('Url inválido');
+      alert('Url inválido');
       return;
     } else setUrlInput((prev) => ({ ...prev, valid: true, open: false }));
-    focusEditor();
-    console.log(urlInput.url);
+    addLink(urlInput.url);
   };
 
   useEffect(() => {
@@ -57,7 +56,6 @@ const InlineStylesToolbar = ({ editorState, handleInlineToggle, focusEditor }: P
     } else {
       targetRectRef.current = targetRect;
     }
-    console.log(targetRect, urlInput.open, targetRectRef.current);
   }, [targetRect]);
 
   return (
@@ -78,9 +76,15 @@ const InlineStylesToolbar = ({ editorState, handleInlineToggle, focusEditor }: P
           })}
           <Divider flexItem orientation='vertical' style={{ margin: '8px 4px' }} />
           <ToolbarItem
-            handleClick={() => setUrlInput((prev) => ({ ...prev, open: true }))}
+            handleClick={() => {
+              if (getCurrentEntity(editorState)?.getType() === 'LINK') {
+                removeLink();
+              } else {
+                setUrlInput((prev) => ({ ...prev, open: true }));
+              }
+            }}
             icon={<InsertLinkIcon />}
-            active={false}
+            active={getCurrentEntity(editorState)?.getType() === 'LINK'}
           />
         </>
       )}
@@ -113,7 +117,8 @@ const InlineStylesToolbar = ({ editorState, handleInlineToggle, focusEditor }: P
 
 interface Props {
   editorState: EditorState;
-  focusEditor: () => void;
+  addLink: (x: string) => void;
+  removeLink: () => void;
   handleInlineToggle: (x: string) => void;
 }
 
