@@ -41,7 +41,7 @@ class Editor extends Component<Props, State> {
 
   onChange = (editorState: EditorState) => this.setState({ editorState });
 
-  focusEditor = () => this.editorRef.current?.focus();
+  focusEditor = () => this.editorRef.current!.focus();
 
   handleKeyCommand = (command: DraftEditorCommand, editorState: EditorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -118,6 +118,7 @@ class Editor extends Component<Props, State> {
         {handleTextSelection(editorState) && (
           <InlineStylesToolbar
             editorState={editorState}
+            focusEditor={this.focusEditor}
             handleInlineToggle={this.toggleInlineStyle}
           />
         )}

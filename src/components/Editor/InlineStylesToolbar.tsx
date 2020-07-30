@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { EditorState, getVisibleSelectionRect } from 'draft-js';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import FormatUnderlinedIcon from '@material-ui/icons/FormatUnderlined';
@@ -11,25 +11,23 @@ import { useTheme } from '@material-ui/core';
 import ToolbarItem from './ToolbarItem';
 import { urlRegex } from './utils';
 
-const InlineStylesToolbar = ({ editorState, handleInlineToggle }: Props) => {
+const InlineStylesToolbar = ({ editorState, handleInlineToggle, focusEditor }: Props) => {
   const theme = useTheme();
-  const [urlInput, setUrlInput] = useState({ open: false, url: '', valid: true });
+
   const targetRect = getVisibleSelectionRect(window);
+  const targetRectRef = useRef(targetRect);
+  const [urlInput, setUrlInput] = useState({ open: false, url: '', valid: true });
   const styles = {
-    top: targetRect ? targetRect.top - 45 : 0,
-    left: targetRect ? targetRect.left : 0,
+    top: targetRectRef.current ? targetRectRef.current.top - 45 : 0,
+    left: targetRectRef.current ? targetRectRef.current.left : 0,
     padding: theme.spacing(0.5),
-    // display: targetRect ? 'flex' : 'none',
+    display: targetRectRef.current ? 'flex' : 'none',
   };
   const inlineStyles = [
     { icon: <FormatBoldIcon />, style: 'BOLD' },
     { icon: <FormatItalicIcon />, style: 'ITALIC' },
     { icon: <FormatUnderlinedIcon />, style: 'UNDERLINE' },
   ];
-
-  useEffect(() => {
-    return () => setUrlInput({ open: false, url: '', valid: true });
-  }, []);
 
   const handleUrlInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value;
@@ -44,9 +42,23 @@ const InlineStylesToolbar = ({ editorState, handleInlineToggle }: Props) => {
       setUrlInput((prev) => ({ ...prev, valid: false }));
       // alert('Url inválido');
       return;
-    } else setUrlInput((prev) => ({ ...prev, valid: true }));
+    } else setUrlInput((prev) => ({ ...prev, valid: true, open: false }));
+    focusEditor();
     console.log(urlInput.url);
   };
+
+  useEffect(() => {
+    return () => setUrlInput({ open: false, url: '', valid: true });
+  }, []);
+
+  useEffect(() => {
+    if (!targetRect && urlInput.open) {
+      return;
+    } else {
+      targetRectRef.current = targetRect;
+    }
+    console.log(targetRect, urlInput.open, targetRectRef.current);
+  }, [targetRect]);
 
   return (
     <div style={styles} className='editor--inline-toolbar'>
@@ -64,6 +76,7 @@ const InlineStylesToolbar = ({ editorState, handleInlineToggle }: Props) => {
               />
             );
           })}
+          <Divider flexItem orientation='vertical' style={{ margin: '8px 4px' }} />
           <ToolbarItem
             handleClick={() => setUrlInput((prev) => ({ ...prev, open: true }))}
             icon={<InsertLinkIcon />}
@@ -100,6 +113,7 @@ const InlineStylesToolbar = ({ editorState, handleInlineToggle }: Props) => {
 
 interface Props {
   editorState: EditorState;
+  focusEditor: () => void;
   handleInlineToggle: (x: string) => void;
 }
 
