@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(2),
       position: 'sticky',
       top: theme.spacing(1),
+      padding: theme.spacing(0.5),
     },
     divider: {
       margin: theme.spacing(1, 0.5),

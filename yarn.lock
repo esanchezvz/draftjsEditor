@@ -1166,6 +1166,11 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
+"@types/tlds@^1.199.0":
+  version "1.199.0"
+  resolved "https://registry.yarnpkg.com/@types/tlds/-/tlds-1.199.0.tgz#4647fd75cb388f4039bfa4a9ae66d4de989cbc87"
+  integrity sha512-wDAuzclsEH+fzHZouSHKB5qHWx2ABHwDfcF1X8Aslu20iHrMbCwOeTPINp9qfymlwnSsH5cMD3Ps7WbgmOcXUg==
+
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/ast/-/ast-1.9.0.tgz#bd850604b4042459a5a41cd7d338cbed695ed964"
@@ -5503,6 +5508,11 @@ tiny-warning@^1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tiny-warning/-/tiny-warning-1.0.3.tgz#94a30db453df4c643d0fd566060d60a875d84754"
   integrity sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==
+
+tlds@^1.207.0:
+  version "1.207.0"
+  resolved "https://registry.yarnpkg.com/tlds/-/tlds-1.207.0.tgz#459264e644cf63ddc0965fece3898913286b1afd"
+  integrity sha512-k7d7Q1LqjtAvhtEOs3yN14EabsNO8ZCoY6RESSJDB9lst3bTx3as/m1UuAeCKzYxiyhR1qq72ZPhpSf+qlqiwg==
 
 to-arraybuffer@^1.0.0:
   version "1.0.1"
