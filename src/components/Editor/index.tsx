@@ -8,25 +8,23 @@ import {
   getDefaultKeyBinding,
   DraftEditorCommand,
   ContentBlock,
+  AtomicBlockUtils,
   // convertToRaw,
 } from 'draft-js';
-import { Tweet } from 'react-twitter-widgets';
 
 import Toolbar from './Toolbar';
 import { handleTextSelection, twitterRegex } from './utils';
 import InlineStylesToolbar from './InlineStylesToolbar';
+import AtomicBlock from './AtomicBlock';
 
 class Editor extends Component<Props, State> {
   private editorRef = createRef<DraftJsEditor>();
+  private editorRootRef = createRef<HTMLDivElement>();
   private decorator: CompositeDecorator;
 
   constructor(props: Props) {
     super(props);
     this.decorator = new CompositeDecorator([
-      {
-        strategy: this.tweetStrategy,
-        component: EmbededTweet,
-      },
       {
         strategy: this.findLinkEntities,
         component: Link,
@@ -46,6 +44,39 @@ class Editor extends Component<Props, State> {
   onChange = (editorState: EditorState) => this.setState({ editorState });
 
   focusEditor = () => this.editorRef.current!.focus();
+
+  handlePastedText = (text: string, _html: string | undefined) => {
+    if (twitterRegex.test(text)) {
+      console.log(twitterRegex.test(text));
+      const arr = text.split('/');
+      const id = arr[arr.length - 1];
+      this.insertAtomicBlock('atomic', { tweetId: id, type: 'tweet' });
+      return 'handled';
+    }
+
+    return 'not-handled';
+  };
+
+  blockRendererFn = (contentBlock: ContentBlock) => {
+    if (contentBlock.getType() !== 'atomic') return null;
+
+    return {
+      component: AtomicBlock,
+      editable: false,
+    };
+  };
+
+  insertAtomicBlock = (type: string, data: any) => {
+    const { editorState } = this.state;
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity(type, 'IMMUTABLE', data);
+
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+
+    const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
+
+    this.onChange(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '));
+  };
 
   handleKeyCommand = (command: DraftEditorCommand, editorState: EditorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -91,6 +122,7 @@ class Editor extends Component<Props, State> {
   ) => {
     contentBlock.findEntityRanges((character) => {
       const entityKey = character.getEntity();
+
       return entityKey !== null && contentState.getEntity(entityKey).getType() === 'LINK';
     }, callback);
   };
@@ -111,20 +143,6 @@ class Editor extends Component<Props, State> {
     this.onChange(RichUtils.toggleLink(newEditorState, newEditorState.getSelection(), entityKey));
   };
 
-  tweetStrategy = (
-    contentBlock: ContentBlock,
-    callback: (start: number, end: number) => void,
-    _contentState: ContentState,
-  ) => {
-    const text = contentBlock.getText();
-    let matchArr: any;
-    let start: number;
-    while ((matchArr = twitterRegex.exec(text)) !== null) {
-      start = matchArr.index;
-      callback(start, start + matchArr[0].length);
-    }
-  };
-
   render() {
     const { editorState, mounted } = this.state;
 
@@ -137,7 +155,7 @@ class Editor extends Component<Props, State> {
     }
 
     return mounted ? (
-      <div className={className}>
+      <div className={className} ref={this.editorRootRef}>
         <Toolbar editorState={editorState} toggleBlock={(v: string) => this.toggleBlockType(v)} />
         <DraftJsEditor
           editorState={this.state.editorState}
@@ -145,6 +163,8 @@ class Editor extends Component<Props, State> {
           blockStyleFn={this.getBlockStyle}
           handleKeyCommand={this.handleKeyCommand}
           keyBindingFn={this.mapKeyToEditorCommand}
+          blockRendererFn={this.blockRendererFn}
+          handlePastedText={this.handlePastedText}
           placeholder='Deja de pendejear y ponte a escribir...'
           ref={this.editorRef}
           spellCheck
@@ -152,6 +172,7 @@ class Editor extends Component<Props, State> {
         {handleTextSelection(editorState) && (
           <InlineStylesToolbar
             editorState={editorState}
+            editorRootRect={this.editorRootRef.current!.getBoundingClientRect()}
             addLink={this.addLink}
             removeLink={this.removeLink}
             handleInlineToggle={this.toggleInlineStyle}
@@ -170,12 +191,6 @@ const Link = (props: any) => {
       {props.children}
     </a>
   );
-};
-
-const EmbededTweet = ({ decoratedText }: { decoratedText: string; rest: any }) => {
-  const arr = decoratedText.split('/');
-  const id = arr[arr.length - 1];
-  return <Tweet options={{ align: 'center' }} tweetId={id} />;
 };
 
 interface Props {}

@@ -11,14 +11,20 @@ import { useTheme } from '@material-ui/core';
 import ToolbarItem from './ToolbarItem';
 import { urlRegex, getCurrentEntity } from './utils';
 
-const InlineStylesToolbar = ({ editorState, handleInlineToggle, addLink, removeLink }: Props) => {
+const InlineStylesToolbar = ({
+  editorState,
+  editorRootRect,
+  handleInlineToggle,
+  addLink,
+  removeLink,
+}: Props) => {
   const theme = useTheme();
 
   const targetRect = getVisibleSelectionRect(window);
   const targetRectRef = useRef(targetRect);
   const [urlInput, setUrlInput] = useState({ open: false, url: '', valid: true });
   const styles = {
-    top: targetRectRef.current ? targetRectRef.current.top - 50 : 0,
+    top: targetRectRef.current ? targetRectRef.current.top - editorRootRect.top + 10 : 0,
     left: targetRectRef.current ? targetRectRef.current.left : 0,
     padding: theme.spacing(0.5),
     display: targetRectRef.current ? 'flex' : 'none',
@@ -117,6 +123,7 @@ const InlineStylesToolbar = ({ editorState, handleInlineToggle, addLink, removeL
 
 interface Props {
   editorState: EditorState;
+  editorRootRect: any;
   addLink: (x: string) => void;
   removeLink: () => void;
   handleInlineToggle: (x: string) => void;
