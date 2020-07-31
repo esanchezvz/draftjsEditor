@@ -47,7 +47,6 @@ class Editor extends Component<Props, State> {
 
   handlePastedText = (text: string, _html: string | undefined) => {
     if (twitterRegex.test(text)) {
-      console.log(twitterRegex.test(text));
       const arr = text.split('/');
       const id = arr[arr.length - 1];
       this.insertAtomicBlock('atomic', { tweetId: id, type: 'tweet' });
