@@ -47,6 +47,7 @@ class Editor extends Component<Props, State> {
 
   handlePastedText = (text: string, _html: string | undefined) => {
     if (twitterRegex.test(text)) {
+      twitterRegex.test(text); // BUG: if i don't test it shows the url instead of tweet sometimes
       const arr = text.split('/');
       const id = arr[arr.length - 1];
       this.insertAtomicBlock('atomic', { tweetId: id, type: 'tweet' });

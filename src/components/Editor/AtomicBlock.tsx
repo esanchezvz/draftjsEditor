@@ -1,4 +1,4 @@
-import { Component, useRef, useEffect } from 'react';
+import { Component } from 'react';
 import { ContentState, ContentBlock } from 'draft-js';
 import { Tweet } from 'react-twitter-widgets';
 
@@ -27,10 +27,10 @@ class AtomicBlock extends Component<Props, {}> {
 }
 
 const EmbeddedTweet = ({ tweetId }: { tweetId: string }) => {
-  const tweetRef = useRef();
+  // const tweetRef = useRef();
 
   // TODO -> Loading
-  useEffect(() => console.log(tweetRef), [tweetRef]);
+  // useEffect(() => console.log(tweetRef), [tweetRef]);
 
   return (
     <Tweet
