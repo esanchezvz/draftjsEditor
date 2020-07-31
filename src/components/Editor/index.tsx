@@ -50,7 +50,7 @@ class Editor extends Component<Props, State> {
       twitterRegex.test(text); // BUG: if i don't test it shows the url instead of tweet sometimes
       const arr = text.split('/');
       const id = arr[arr.length - 1];
-      this.insertAtomicBlock('atomic', { tweetId: id, type: 'tweet' });
+      this.insertAtomicBlock('tweet', { tweetId: id });
       return 'handled';
     }
 

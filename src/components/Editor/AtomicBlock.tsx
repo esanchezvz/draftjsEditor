@@ -4,6 +4,7 @@ import { Tweet } from 'react-twitter-widgets';
 
 class AtomicBlock extends Component<Props, {}> {
   private block: ContentBlock;
+  private type: string;
   private contentState: ContentState;
   private entity: any; // TODO: get correct type = Draft.Model.Entity.DraftEntityInstance
   private data: any;
@@ -14,10 +15,11 @@ class AtomicBlock extends Component<Props, {}> {
     this.contentState = this.props.contentState;
     this.entity = this.contentState.getEntity(this.block.getEntityAt(0));
     this.data = this.entity.getData();
+    this.type = this.entity.getType();
   }
 
   render() {
-    switch (this.data.type) {
+    switch (this.type) {
       case 'tweet':
         return <EmbeddedTweet tweetId={this.data.tweetId} />;
       default:
