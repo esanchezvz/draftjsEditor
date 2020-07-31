@@ -18,7 +18,7 @@ const InlineStylesToolbar = ({ editorState, handleInlineToggle, addLink, removeL
   const targetRectRef = useRef(targetRect);
   const [urlInput, setUrlInput] = useState({ open: false, url: '', valid: true });
   const styles = {
-    top: targetRectRef.current ? targetRectRef.current.top - 45 : 0,
+    top: targetRectRef.current ? targetRectRef.current.top - 50 : 0,
     left: targetRectRef.current ? targetRectRef.current.left : 0,
     padding: theme.spacing(0.5),
     display: targetRectRef.current ? 'flex' : 'none',
@@ -74,7 +74,7 @@ const InlineStylesToolbar = ({ editorState, handleInlineToggle, addLink, removeL
               />
             );
           })}
-          <Divider flexItem orientation='vertical' style={{ margin: '8px 4px' }} />
+          <Divider flexItem orientation='vertical' style={{ margin: theme.spacing(1, 0.5) }} />
           <ToolbarItem
             handleClick={() => {
               if (getCurrentEntity(editorState)?.getType() === 'LINK') {

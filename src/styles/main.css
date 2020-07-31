@@ -48,7 +48,7 @@
   color: #999999;
 }
 
-/* .editor--inline-toolbar::before {
+.editor--inline-toolbar::before {
   content: ' ';
   display: block;
   position: absolute;
@@ -68,7 +68,7 @@
   margin-left: -4px;
   border: 5px solid transparent;
   border-top-color: #f7f7f7;
-} */
+}
 
 .editor--toolbar-item {
   display: flex;

@@ -10,9 +10,10 @@ import {
   ContentBlock,
   // convertToRaw,
 } from 'draft-js';
+import { Tweet } from 'react-twitter-widgets';
 
 import Toolbar from './Toolbar';
-import { handleTextSelection } from './utils';
+import { handleTextSelection, twitterRegex } from './utils';
 import InlineStylesToolbar from './InlineStylesToolbar';
 
 class Editor extends Component<Props, State> {
@@ -22,6 +23,10 @@ class Editor extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.decorator = new CompositeDecorator([
+      {
+        strategy: this.tweetStrategy,
+        component: EmbededTweet,
+      },
       {
         strategy: this.findLinkEntities,
         component: Link,
@@ -106,6 +111,20 @@ class Editor extends Component<Props, State> {
     this.onChange(RichUtils.toggleLink(newEditorState, newEditorState.getSelection(), entityKey));
   };
 
+  tweetStrategy = (
+    contentBlock: ContentBlock,
+    callback: (start: number, end: number) => void,
+    _contentState: ContentState,
+  ) => {
+    const text = contentBlock.getText();
+    let matchArr: any;
+    let start: number;
+    while ((matchArr = twitterRegex.exec(text)) !== null) {
+      start = matchArr.index;
+      callback(start, start + matchArr[0].length);
+    }
+  };
+
   render() {
     const { editorState, mounted } = this.state;
 
@@ -151,6 +170,12 @@ const Link = (props: any) => {
       {props.children}
     </a>
   );
+};
+
+const EmbededTweet = ({ decoratedText }: { decoratedText: string; rest: any }) => {
+  const arr = decoratedText.split('/');
+  const id = arr[arr.length - 1];
+  return <Tweet options={{ align: 'center' }} tweetId={id} />;
 };
 
 interface Props {}
