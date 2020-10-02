@@ -9,8 +9,8 @@ import {
   DraftEditorCommand,
   ContentBlock,
   AtomicBlockUtils,
-  convertToRaw,
   DraftHandleValue,
+  // convertToRaw,
 } from 'draft-js';
 
 import Toolbar from './Toolbar';
@@ -54,8 +54,8 @@ class Editor extends Component<Props, State> {
     if (twitterRegex.test(text)) {
       twitterRegex.test(text); // BUG: if I don't test it shows the url instead of tweet sometimes
       const arr = text.split('/');
-      const id = arr[arr.length - 1];
-      this.insertAtomicBlock('tweet', { tweetId: id });
+      const tweetId = arr[arr.length - 1];
+      this.insertAtomicBlock('tweet', { tweetId });
       return 'handled';
     }
 
