@@ -1,6 +1,9 @@
 import { Component } from 'react';
 import { ContentState, ContentBlock } from 'draft-js';
 import { Tweet } from 'react-twitter-widgets';
+import Alert from '@material-ui/lab/Alert';
+import AlertTitle from '@material-ui/lab/AlertTitle';
+import YoutubeVideo from 'react-youtube';
 
 class AtomicBlock extends Component<Props, {}> {
   private block: ContentBlock;
@@ -22,6 +25,8 @@ class AtomicBlock extends Component<Props, {}> {
     switch (this.type) {
       case 'tweet':
         return <EmbeddedTweet tweetId={this.data.tweetId} />;
+      case 'youtube':
+        return <EmbeddedYoutubeVideo videoId={this.data.videoId} />;
       default:
         return null;
     }
@@ -29,19 +34,28 @@ class AtomicBlock extends Component<Props, {}> {
 }
 
 const EmbeddedTweet = ({ tweetId }: { tweetId: string }) => {
-  // const tweetRef = useRef();
-
-  // TODO -> Loading
-  // useEffect(() => console.log(tweetRef), [tweetRef]);
+  // TODO -> Update theme dynamically
 
   return (
     <Tweet
       // ref={tweetRef}
-      options={{ align: 'center' }}
+      options={{ align: 'center', theme: 'light' }}
       tweetId={tweetId}
-      renderError={(_e) => <p>Error al cargar el tweet.</p>}
+      renderError={(_e) => (
+        <Alert severity='error'>
+          <AlertTitle>Error</AlertTitle>
+          Error al cargar el tweet. <strong>Revisa que el url sea correcto.</strong>
+        </Alert>
+      )}
     />
   );
+};
+
+const EmbeddedYoutubeVideo = ({ videoId }: { videoId: string }) => {
+  const options = {
+    width: '100%',
+  };
+  return <YoutubeVideo videoId={videoId} opts={options} />;
 };
 
 interface Props {

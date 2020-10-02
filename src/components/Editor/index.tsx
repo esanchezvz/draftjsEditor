@@ -13,7 +13,7 @@ import {
 } from 'draft-js';
 
 import Toolbar from './Toolbar';
-import { handleTextSelection, twitterRegex } from './utils';
+import { handleTextSelection, twitterRegex, youtubeRegex } from './utils';
 import InlineStylesToolbar from './InlineStylesToolbar';
 import AtomicBlock from './AtomicBlock';
 
@@ -47,10 +47,19 @@ class Editor extends Component<Props, State> {
 
   handlePastedText = (text: string, _html: string | undefined) => {
     if (twitterRegex.test(text)) {
-      twitterRegex.test(text); // BUG: if i don't test it shows the url instead of tweet sometimes
+      twitterRegex.test(text); // BUG: if I don't test it shows the url instead of tweet sometimes
       const arr = text.split('/');
       const id = arr[arr.length - 1];
       this.insertAtomicBlock('tweet', { tweetId: id });
+      return 'handled';
+    }
+
+    if (youtubeRegex.test(text)) {
+      youtubeRegex.test(text); // BUG: if I don't test it shows the url instead of video sometimes
+      const arr = text.split('?');
+      const params = new URLSearchParams(arr[1]);
+      const videoId = params.get('v');
+      this.insertAtomicBlock('youtube', { videoId });
       return 'handled';
     }
 

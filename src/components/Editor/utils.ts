@@ -5,6 +5,7 @@ export const urlRegex = new RegExp(
 );
 
 export const twitterRegex = new RegExp(/^https:\/\/twitter.com\/.+/g);
+export const youtubeRegex = new RegExp(/^https:\/\/www.youtube.com\/.+/g);
 
 export const handleTextSelection = (editorState: EditorState) => {
   const selectionState = editorState.getSelection();
