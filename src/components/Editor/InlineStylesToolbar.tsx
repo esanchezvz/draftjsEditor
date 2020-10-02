@@ -53,7 +53,11 @@ const InlineStylesToolbar = ({
 
     if (!urlRegex.test(urlInput.url)) {
       setUrlInput((prev) => ({ ...prev, valid: false }));
-      setSnackBarAlert({ open: true, text: 'Url inválido', severity: 'error' });
+      setSnackBarAlert({
+        open: true,
+        text: '<b>Url inválido</b>  —  Asegúrate de que empiece con http:// o https://',
+        severity: 'error',
+      });
       return;
     } else setUrlInput((prev) => ({ ...prev, valid: true, open: false }));
     addLink(urlInput.url);
@@ -135,7 +139,7 @@ const InlineStylesToolbar = ({
           severity='error'
           variant='filled'
         >
-          {snackbarState.text}
+          <div dangerouslySetInnerHTML={{ __html: snackbarState.text }}></div>
         </Alert>
       </Snackbar>
     </div>
