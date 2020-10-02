@@ -6,6 +6,8 @@ import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
 import FormatUnderlinedIcon from '@material-ui/icons/FormatUnderlined';
 import InsertLinkIcon from '@material-ui/icons/InsertLink';
+import Alert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
 import { useTheme } from '@material-ui/core';
 
 import ToolbarItem from './ToolbarItem';
@@ -21,6 +23,11 @@ const InlineStylesToolbar = ({
   const theme = useTheme();
 
   const targetRect = getVisibleSelectionRect(window);
+  const [snackbarState, setSnackBarAlert] = useState({
+    open: false,
+    text: '',
+    severity: '',
+  });
   const targetRectRef = useRef(targetRect);
   const [urlInput, setUrlInput] = useState({ open: false, url: '', valid: true });
   const styles = {
@@ -46,7 +53,7 @@ const InlineStylesToolbar = ({
 
     if (!urlRegex.test(urlInput.url)) {
       setUrlInput((prev) => ({ ...prev, valid: false }));
-      alert('Url inválido');
+      setSnackBarAlert({ open: true, text: 'Url inválido', severity: 'error' });
       return;
     } else setUrlInput((prev) => ({ ...prev, valid: true, open: false }));
     addLink(urlInput.url);
@@ -117,6 +124,20 @@ const InlineStylesToolbar = ({
           </Button>
         </form>
       )}
+      <Snackbar
+        open={snackbarState.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackBarAlert((prev) => ({ ...prev, open: false }))}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackBarAlert((prev) => ({ ...prev, open: false }))}
+          severity='error'
+          variant='filled'
+        >
+          {snackbarState.text}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

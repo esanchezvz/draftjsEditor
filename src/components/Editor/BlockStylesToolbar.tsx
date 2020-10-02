@@ -15,15 +15,15 @@ const BlockStylesToolbar = ({ editorState, handleBlockToggle }: Props) => {
     { icon: <FormatQuoteIcon />, style: 'blockquote' },
   ];
 
+  const selection = editorState.getSelection();
+  const blockType = editorState
+    .getCurrentContent()
+    .getBlockForKey(selection.getStartKey())
+    .getType();
+
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       {blockStyles.map((item, i) => {
-        const selection = editorState.getSelection();
-        const blockType = editorState
-          .getCurrentContent()
-          .getBlockForKey(selection.getStartKey())
-          .getType();
-
         return (
           <ToolbarItem
             key={`${item.icon}-${i}`}
