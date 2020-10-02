@@ -43,7 +43,7 @@ class Editor extends Component<Props, State> {
   }
 
   componentDidUpdate() {
-    console.log(convertToRaw(this.state.editorState.getCurrentContent()));
+    // console.log(convertToRaw(this.state.editorState.getCurrentContent()));
   }
 
   onChange = (editorState: EditorState) => this.setState({ editorState });
@@ -181,7 +181,6 @@ class Editor extends Component<Props, State> {
           blockStyleFn={this.getBlockStyle}
           handleKeyCommand={this.handleKeyCommand}
           keyBindingFn={this.mapKeyToEditorCommand}
-          onTab={this.mapKeyToEditorCommand}
           blockRendererFn={this.blockRendererFn}
           handlePastedText={this.handlePastedText}
           placeholder='Deja de pendejear y ponte a escribir...'
@@ -190,8 +189,8 @@ class Editor extends Component<Props, State> {
         />
         {handleTextSelection(editorState) && (
           <InlineStylesToolbar
+            editorRoot={this.editorRootRef.current}
             editorState={editorState}
-            editorRootRect={this.editorRootRef.current!.getBoundingClientRect()}
             addLink={this.addLink}
             removeLink={this.removeLink}
             handleInlineToggle={this.toggleInlineStyle}

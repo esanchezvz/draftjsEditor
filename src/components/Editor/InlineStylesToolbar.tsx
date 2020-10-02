@@ -15,24 +15,27 @@ import { urlRegex, getCurrentEntity } from './utils';
 
 const InlineStylesToolbar = ({
   editorState,
-  editorRootRect,
   handleInlineToggle,
   addLink,
   removeLink,
+  editorRoot,
 }: Props) => {
+  if (!editorRoot) return null;
   const theme = useTheme();
 
-  const targetRect = getVisibleSelectionRect(window);
-  const [snackbarState, setSnackBarAlert] = useState({
-    open: false,
-    text: '',
-    severity: '',
-  });
+  const editorRootRect = editorRoot.getBoundingClientRect();
+  const parentWindow = editorRoot.ownerDocument && editorRoot.ownerDocument.defaultView;
+  const targetRect = getVisibleSelectionRect(parentWindow);
+  const [snackbar, setSnackbar] = useState({ open: false, text: '', severity: '' });
   const targetRectRef = useRef(targetRect);
   const [urlInput, setUrlInput] = useState({ open: false, url: '', valid: true });
   const styles = {
     top: targetRectRef.current ? targetRectRef.current.top - editorRootRect.top + 10 : 0,
-    left: targetRectRef.current ? targetRectRef.current.left : 0,
+    left: targetRectRef.current
+      ? editorRoot.offsetLeft +
+        (targetRectRef.current.left - editorRootRect.left) +
+        targetRectRef.current.width / 2
+      : 0,
     padding: theme.spacing(0.5),
     display: targetRectRef.current ? 'flex' : 'none',
   };
@@ -53,7 +56,7 @@ const InlineStylesToolbar = ({
 
     if (!urlRegex.test(urlInput.url)) {
       setUrlInput((prev) => ({ ...prev, valid: false }));
-      setSnackBarAlert({
+      setSnackbar({
         open: true,
         text: '<b>Url inválido</b>  —  Asegúrate de que empiece con http:// o https://',
         severity: 'error',
@@ -129,17 +132,17 @@ const InlineStylesToolbar = ({
         </form>
       )}
       <Snackbar
-        open={snackbarState.open}
+        open={snackbar.open}
         autoHideDuration={6000}
-        onClose={() => setSnackBarAlert((prev) => ({ ...prev, open: false }))}
+        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert
-          onClose={() => setSnackBarAlert((prev) => ({ ...prev, open: false }))}
+          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
           severity='error'
           variant='filled'
         >
-          <div dangerouslySetInnerHTML={{ __html: snackbarState.text }}></div>
+          <div dangerouslySetInnerHTML={{ __html: snackbar.text }}></div>
         </Alert>
       </Snackbar>
     </div>
@@ -148,10 +151,10 @@ const InlineStylesToolbar = ({
 
 interface Props {
   editorState: EditorState;
-  editorRootRect: any;
   addLink: (x: string) => void;
   removeLink: () => void;
   handleInlineToggle: (x: string) => void;
+  editorRoot: HTMLDivElement | null;
 }
 
 export default InlineStylesToolbar;
