@@ -10,6 +10,7 @@ import {
   ContentBlock,
   AtomicBlockUtils,
   convertToRaw,
+  DraftHandleValue,
 } from 'draft-js';
 
 import Toolbar from './Toolbar';
@@ -88,10 +89,10 @@ class Editor extends Component<Props, State> {
 
     const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
 
-    this.onChange(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '));
+    this.onChange(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, type));
   };
 
-  handleKeyCommand = (command: DraftEditorCommand, editorState: EditorState) => {
+  handleKeyCommand = (command: DraftEditorCommand, editorState: EditorState): DraftHandleValue => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       this.onChange(newState);
@@ -101,8 +102,12 @@ class Editor extends Component<Props, State> {
   };
 
   mapKeyToEditorCommand = (e: any) => {
-    if (e.keyCode === 9 /* TAB */) {
-      const newEditorState = RichUtils.onTab(e, this.state.editorState, 4 /* maxDepth */);
+    if (e.keyCode === 9) {
+      const newEditorState = RichUtils.onTab(
+        e,
+        this.state.editorState,
+        2 /* Max Indentation Depth */,
+      );
       if (newEditorState !== this.state.editorState) {
         this.onChange(newEditorState);
       }
@@ -176,6 +181,7 @@ class Editor extends Component<Props, State> {
           blockStyleFn={this.getBlockStyle}
           handleKeyCommand={this.handleKeyCommand}
           keyBindingFn={this.mapKeyToEditorCommand}
+          onTab={this.mapKeyToEditorCommand}
           blockRendererFn={this.blockRendererFn}
           handlePastedText={this.handlePastedText}
           placeholder='Deja de pendejear y ponte a escribir...'
