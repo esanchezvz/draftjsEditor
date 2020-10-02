@@ -1,15 +1,17 @@
 import { EditorState } from 'draft-js';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
-import FormatTitleIcon from '@material-ui/icons/Title';
 import FormatQuoteIcon from '@material-ui/icons/FormatQuote';
 import ToolbarItem from './ToolbarItem';
+import { HeaderOneIcon, HeaderTwoIcon, HeaderThreeIcon } from './Icons';
 
 const BlockStylesToolbar = ({ editorState, handleBlockToggle }: Props) => {
   const blockStyles = [
     { icon: <FormatListBulletedIcon />, style: 'unordered-list-item' },
     { icon: <FormatListNumberedIcon />, style: 'ordered-list-item' },
-    { icon: <FormatTitleIcon />, style: 'header-three' },
+    { icon: <HeaderOneIcon />, style: 'header-one' },
+    { icon: <HeaderTwoIcon />, style: 'header-two' },
+    { icon: <HeaderThreeIcon />, style: 'header-three' },
     { icon: <FormatQuoteIcon />, style: 'blockquote' },
   ];
 

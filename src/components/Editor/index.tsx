@@ -9,7 +9,7 @@ import {
   DraftEditorCommand,
   ContentBlock,
   AtomicBlockUtils,
-  // convertToRaw,
+  convertToRaw,
 } from 'draft-js';
 
 import Toolbar from './Toolbar';
@@ -39,6 +39,10 @@ class Editor extends Component<Props, State> {
   componentDidMount() {
     this.setState({ mounted: true });
     setTimeout(() => this.focusEditor(), 0);
+  }
+
+  componentDidUpdate() {
+    console.log(convertToRaw(this.state.editorState.getCurrentContent()));
   }
 
   onChange = (editorState: EditorState) => this.setState({ editorState });
