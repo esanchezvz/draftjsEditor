@@ -1,6 +1,8 @@
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
+// import Editor from '../src/components/Editor/Editor';
 import Editor from '../src/components/Editor';
+import { EditorProvider } from '../src/editor.context';
 
 const IndexPage = () => {
   return (
@@ -8,7 +10,9 @@ const IndexPage = () => {
       <Typography align='center' variant='h1'>
         DraftJS
       </Typography>
-      <Editor />
+      <EditorProvider>
+        <Editor />
+      </EditorProvider>
     </Container>
   );
 };

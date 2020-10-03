@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { EditorState, getVisibleSelectionRect } from 'draft-js';
+import { EditorState, getVisibleSelectionRect, RichUtils } from 'draft-js';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
@@ -11,16 +11,12 @@ import Snackbar from '@material-ui/core/Snackbar';
 import { useTheme } from '@material-ui/core';
 
 import ToolbarItem from './ToolbarItem';
+import { useEditor } from '../../editor.context';
 import { urlRegex, getCurrentEntity } from './utils';
 
-const InlineStylesToolbar = ({
-  editorState,
-  handleInlineToggle,
-  addLink,
-  removeLink,
-  editorRoot,
-}: Props) => {
+const InlineStylesToolbar = ({ editorRoot }: Props) => {
   if (!editorRoot) return null;
+  const { editorState, setEditorState } = useEditor();
   const theme = useTheme();
 
   const editorRootRect = editorRoot.getBoundingClientRect();
@@ -45,10 +41,28 @@ const InlineStylesToolbar = ({
     { icon: <FormatUnderlinedIcon />, style: 'UNDERLINE' },
   ];
 
+  const _toggleInlineStyle = (inlineStyle: string) => {
+    setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
+  };
+
   const handleUrlInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const url = e.target.value;
 
     setUrlInput((prev) => ({ ...prev, url }));
+  };
+
+  const addLink = (url: string) => {
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', { url });
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
+
+    setEditorState(RichUtils.toggleLink(newEditorState, newEditorState.getSelection(), entityKey));
+  };
+
+  const removeLink = () => {
+    const selection = editorState.getSelection();
+    setEditorState(RichUtils.toggleLink(editorState, selection, null));
   };
 
   const handleUrlSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -88,7 +102,7 @@ const InlineStylesToolbar = ({
             return (
               <ToolbarItem
                 key={`${item.icon}-${i}`}
-                handleClick={() => handleInlineToggle(item.style)}
+                handleClick={() => _toggleInlineStyle(item.style)}
                 icon={item.icon}
                 active={currentStyle.has(item.style)}
               />
@@ -150,10 +164,6 @@ const InlineStylesToolbar = ({
 };
 
 interface Props {
-  editorState: EditorState;
-  addLink: (x: string) => void;
-  removeLink: () => void;
-  handleInlineToggle: (x: string) => void;
   editorRoot: HTMLDivElement | null;
 }
 

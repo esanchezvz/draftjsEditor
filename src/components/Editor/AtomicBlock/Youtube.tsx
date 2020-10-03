@@ -4,7 +4,11 @@ const EmbeddedYoutubeVideo = ({ videoId }: { videoId: string }) => {
   const options = {
     width: '100%',
   };
-  return <YoutubeVideo videoId={videoId} opts={options} />;
+  return (
+    <div style={{ maxWidth: 640, margin: '0 auto' }}>
+      <YoutubeVideo videoId={videoId} opts={options} />
+    </div>
+  );
 };
 
 export default EmbeddedYoutubeVideo;
