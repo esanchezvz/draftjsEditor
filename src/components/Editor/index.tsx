@@ -48,7 +48,7 @@ const Editor: React.FC = () => {
     return 'not-handled';
   };
 
-  const _mapKeyToEditorCommand = (e: any) => {
+  const _mapKeyToEditorCommand = (e: React.KeyboardEvent) => {
     if (e.keyCode === 9) {
       const newEditorState = RichUtils.onTab(e, editorState, 2 /* Max Indentation Depth */);
       if (newEditorState !== editorState) {
