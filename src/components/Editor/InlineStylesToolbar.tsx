@@ -16,6 +16,8 @@ import { urlRegex, getCurrentEntity } from './utils';
 
 const InlineStylesToolbar = ({ editorRoot }: Props) => {
   if (!editorRoot) return null;
+  console.log('entró');
+
   const { editorState, setEditorState } = useEditor();
   const theme = useTheme();
 

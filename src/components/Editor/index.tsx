@@ -1,4 +1,4 @@
-import { useEffect, createRef, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   EditorState,
   Editor as RichTextEditor,
@@ -19,9 +19,8 @@ import AtomicBlock from './AtomicBlock';
 import { useEditor } from '../../editor.context';
 
 const Editor: React.FC = () => {
-  const editorRef = createRef<RichTextEditor>();
-  const editorRootRef = createRef<HTMLDivElement>();
-  const [editorClassName, setEditorClassName] = useState('editor');
+  const editorRef = useRef<RichTextEditor>(null);
+  const editorRootRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const { editorState, setEditorState } = useEditor();
 
@@ -59,10 +58,6 @@ const Editor: React.FC = () => {
     return getDefaultKeyBinding(e);
   };
 
-  const _toggleBlockType = (blockType: string) => {
-    setEditorState(RichUtils.toggleBlockType(editorState, blockType));
-  };
-
   const _getBlockStyle = (block: ContentBlock) => {
     switch (block.getType()) {
       case 'blockquote':
@@ -94,17 +89,8 @@ const Editor: React.FC = () => {
   };
 
   useEffect(() => {
-    const contentState = editorState.getCurrentContent();
-    let className = 'editor';
-
-    if (!contentState.hasText()) {
-      if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-        className += ' hide-placeholder';
-      }
-    }
-
-    setEditorClassName(className);
-  }, [editorState]);
+    console.log(editorRootRef.current);
+  });
 
   useEffect(() => {
     if (!mounted) setMounted(true);
@@ -112,9 +98,18 @@ const Editor: React.FC = () => {
     if (editorRef.current && mounted) _focusEditor();
   }, [mounted]);
 
+  const contentState = editorState.getCurrentContent();
+  let className = 'editor';
+
+  if (!contentState.hasText()) {
+    if (contentState.getBlockMap().first().getType() !== 'unstyled') {
+      className += ' hide-placeholder';
+    }
+  }
+
   return mounted ? (
-    <div className={editorClassName} ref={editorRootRef}>
-      <Toolbar editorState={editorState} toggleBlock={(v: string) => _toggleBlockType(v)} />
+    <div className={className} ref={editorRootRef}>
+      <Toolbar />
       <RichTextEditor
         editorState={editorState}
         onChange={setEditorState}

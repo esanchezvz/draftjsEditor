@@ -1,4 +1,3 @@
-import { EditorState } from 'draft-js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
@@ -24,24 +23,16 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const Toolbar = ({ toggleBlock, editorState }: Props) => {
+const Toolbar = () => {
   const classes = useStyles();
-
-  const handleBlockToggle = (style: string) => toggleBlock(style);
 
   return (
     <Paper elevation={0} className={classes.paper}>
-      <BlockStylesToolbar handleBlockToggle={handleBlockToggle} editorState={editorState} />
+      <BlockStylesToolbar />
       <Divider flexItem orientation='vertical' className={classes.divider} />
       <ToolbarItem icon={<AddImageIcon />} active={false} handleClick={() => {}} />
     </Paper>
   );
 };
-
-interface Props {
-  toggleBlock: (x: string) => void;
-  // toggleInlineStyle: (x: string) => void;
-  editorState: EditorState;
-}
 
 export default Toolbar;
