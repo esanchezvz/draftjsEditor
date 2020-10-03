@@ -119,7 +119,7 @@ const Editor: React.FC = () => {
         spellCheck
       />
       {handleTextSelection(editorState) && (
-        <InlineStylesToolbar editorRoot={editorRootRef.current} />
+        <InlineStylesToolbar editorRoot={editorRootRef.current} focusEditor={_focusEditor} />
       )}
     </div>
   ) : null;

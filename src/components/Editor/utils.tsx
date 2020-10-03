@@ -1,5 +1,9 @@
 import { AtomicBlockUtils, EditorState } from 'draft-js';
 import { Dispatch, SetStateAction } from 'react';
+import FormatBoldIcon from '@material-ui/icons/FormatBold';
+import FormatItalicIcon from '@material-ui/icons/FormatItalic';
+import FormatUnderlinedIcon from '@material-ui/icons/FormatUnderlined';
+import { Theme } from '@material-ui/core';
 
 export const urlRegex = new RegExp(
   /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i,
@@ -85,3 +89,35 @@ export const insertAtomicBlock = (
 
   setEditorState(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, type));
 };
+
+export const getInlineToolbarStyles = (
+  targetRect: FakeClientRect,
+  editorRoot: HTMLDivElement,
+  theme: Theme,
+) => {
+  const editorRootRect = editorRoot.getBoundingClientRect();
+
+  return {
+    top: targetRect ? targetRect.top - editorRootRect.top + 10 : 0,
+    left: targetRect
+      ? editorRoot.offsetLeft + (targetRect.left - editorRootRect.left) + targetRect.width / 2
+      : 0,
+    padding: theme.spacing(0.5),
+    display: targetRect ? 'flex' : 'none',
+  };
+};
+
+interface FakeClientRect {
+  top: number;
+  bottom: number;
+  width: number;
+  height: number;
+  left: number;
+  right: number;
+}
+
+export const inlineStyles = [
+  { icon: <FormatBoldIcon />, style: 'BOLD' },
+  { icon: <FormatItalicIcon />, style: 'ITALIC' },
+  { icon: <FormatUnderlinedIcon />, style: 'UNDERLINE' },
+];
