@@ -78,13 +78,9 @@
 }
 
 .editor--toolbar-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-  padding: 4px;
-  cursor: pointer;
-  color: rgba(0, 0, 0, 0.4);
+  border-radius: 5px !important;
+  padding: 4px !important;
+  color: rgba(0, 0, 0, 0.4) !important;
 }
 
 .editor--toolbar-item:hover {

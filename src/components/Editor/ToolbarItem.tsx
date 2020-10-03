@@ -1,6 +1,8 @@
+import ButtonBase from '@material-ui/core/ButtonBase';
+
 const ToolbarItem = ({ icon, active, handleClick }: Props) => {
   return (
-    <span
+    <ButtonBase
       className={`editor--toolbar-item ${active ? 'active' : ''}`}
       onMouseDown={(e) => {
         e.preventDefault();
@@ -8,7 +10,7 @@ const ToolbarItem = ({ icon, active, handleClick }: Props) => {
       }}
     >
       {icon}
-    </span>
+    </ButtonBase>
   );
 };
 
