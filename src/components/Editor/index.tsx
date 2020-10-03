@@ -89,10 +89,6 @@ const Editor: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(editorRootRef.current);
-  });
-
-  useEffect(() => {
     if (!mounted) setMounted(true);
 
     if (editorRef.current && mounted) _focusEditor();
