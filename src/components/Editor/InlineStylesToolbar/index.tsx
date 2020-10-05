@@ -5,7 +5,11 @@ import InsertLinkIcon from '@material-ui/icons/InsertLink';
 import { useTheme } from '@material-ui/core';
 
 import ToolbarItem from '../ToolbarItem';
-import { getCurrentEntity, inlineStyles, getInlineToolbarStyles } from '../utils';
+import {
+  getCurrentEntity,
+  inlineStyles,
+  getInlineToolbarStyles,
+} from '../../../utils/editor.utils';
 import { useEditor } from '../../../editor.context';
 import AddUrl from './AddUrl';
 
@@ -50,7 +54,6 @@ const InlineStylesToolbar = ({ editorRoot, focusEditor }: Props) => {
     setUrlOpen(false);
     setTimeout(() => {
       focusEditor();
-      alert('HOLA');
       // TODO -> handle SelectionState after focus to be able to keep writing without stopping (getSelectionAfter())
     }, 0);
   };

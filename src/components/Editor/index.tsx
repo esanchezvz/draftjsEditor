@@ -10,7 +10,12 @@ import {
   // convertToRaw,
 } from 'draft-js';
 
-import { handleTextSelection, insertAtomicBlock, twitterRegex, youtubeRegex } from './utils';
+import {
+  handleTextSelection,
+  insertAtomicBlock,
+  twitterRegex,
+  youtubeRegex,
+} from '../../utils/editor.utils';
 
 import Toolbar from './Toolbar';
 import InlineStylesToolbar from './InlineStylesToolbar';

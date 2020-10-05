@@ -6,7 +6,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Portal from '@material-ui/core/Portal';
 import { useTheme } from '@material-ui/core';
 
-import { urlRegex } from '../utils';
+import { urlRegex } from '../../../utils/editor.utils';
 import { useEditor } from '../../../editor.context';
 
 const AddUrl = ({ handleInputClose }: Props) => {
