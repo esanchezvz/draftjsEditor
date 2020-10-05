@@ -23,7 +23,16 @@ const AddUrl = ({ handleInputClose }: Props) => {
     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
     const newEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
 
-    setEditorState(RichUtils.toggleLink(newEditorState, newEditorState.getSelection(), entityKey));
+    const updatedState = RichUtils.toggleLink(
+      newEditorState,
+      newEditorState.getSelection(),
+      entityKey,
+    );
+    const updatedContent = updatedState.getCurrentContent();
+
+    const finalState = EditorState.forceSelection(updatedState, updatedContent.getSelectionAfter());
+
+    setEditorState(finalState);
     handleInputClose();
   };
 

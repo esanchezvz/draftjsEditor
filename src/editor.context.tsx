@@ -11,7 +11,7 @@ import { CompositeDecorator, convertToRaw, EditorState } from 'draft-js';
 
 import Link, { findLinkEntities } from './components/Editor/Link';
 
-const decorator = new CompositeDecorator([
+export const decorator = new CompositeDecorator([
   {
     strategy: findLinkEntities,
     component: Link,
