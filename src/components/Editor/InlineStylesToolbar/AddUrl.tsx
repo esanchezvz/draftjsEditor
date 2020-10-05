@@ -15,6 +15,7 @@ const AddUrl = ({ handleInputClose }: Props) => {
 
   const [snackbar, setSnackbar] = useState({ open: false, text: '', severity: '' });
   const [urlInput, setUrlInput] = useState({ url: '', valid: true });
+  // const [urlInput, setUrlInput] = useState({ url: 'https://google.com', valid: true });
 
   const addLink = (url: string) => {
     const contentState = editorState.getCurrentContent();
@@ -34,14 +35,11 @@ const AddUrl = ({ handleInputClose }: Props) => {
 
   const handleUrlSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const message = '<b>Url inválido</b>  —  Asegúrate de que empiece con http:// o https://';
 
     if (!urlRegex.test(urlInput.url)) {
       setUrlInput((prev) => ({ ...prev, valid: false }));
-      setSnackbar({
-        open: true,
-        text: '<b>Url inválido</b>  —  Asegúrate de que empiece con http:// o https://',
-        severity: 'error',
-      });
+      setSnackbar({ open: true, text: message, severity: 'error' });
       return;
     } else setUrlInput((prev) => ({ ...prev, valid: true }));
     addLink(urlInput.url);

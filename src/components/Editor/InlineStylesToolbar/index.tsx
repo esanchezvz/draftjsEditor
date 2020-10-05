@@ -46,6 +46,15 @@ const InlineStylesToolbar = ({ editorRoot, focusEditor }: Props) => {
     }
   }, [targetRect]);
 
+  const _handleUrlInputClose = () => {
+    setUrlOpen(false);
+    setTimeout(() => {
+      focusEditor();
+      alert('HOLA');
+      // TODO -> handle SelectionState after focus to be able to keep writing without stopping (getSelectionAfter())
+    }, 0);
+  };
+
   return (
     <div style={styles} className='editor--inline-toolbar'>
       {!urlOpen && (
@@ -70,14 +79,7 @@ const InlineStylesToolbar = ({ editorRoot, focusEditor }: Props) => {
           />
         </>
       )}
-      {urlOpen && (
-        <AddUrl
-          handleInputClose={() => {
-            setUrlOpen(false);
-            focusEditor();
-          }}
-        />
-      )}
+      {urlOpen && <AddUrl handleInputClose={_handleUrlInputClose} />}
     </div>
   );
 };
