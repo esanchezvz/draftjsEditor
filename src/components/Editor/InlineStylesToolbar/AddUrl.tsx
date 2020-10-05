@@ -15,7 +15,6 @@ const AddUrl = ({ handleInputClose }: Props) => {
 
   const [snackbar, setSnackbar] = useState({ open: false, text: '', severity: '' });
   const [urlInput, setUrlInput] = useState({ url: '', valid: true });
-  // const [urlInput, setUrlInput] = useState({ url: 'https://google.com', valid: true });
 
   const addLink = (url: string) => {
     const contentState = editorState.getCurrentContent();
@@ -29,8 +28,15 @@ const AddUrl = ({ handleInputClose }: Props) => {
       entityKey,
     );
     const updatedContent = updatedState.getCurrentContent();
+    const finalSelection = updatedContent.getSelectionAfter().merge({
+      hasFocus: false,
+      focusOffset: updatedContent.getSelectionAfter().getEndOffset(),
+      isBackward: true,
+      anchorKey: updatedContent.getSelectionAfter().getEndKey(),
+      anchorOffset: updatedContent.getSelectionAfter().getEndOffset(),
+    });
 
-    const finalState = EditorState.forceSelection(updatedState, updatedContent.getSelectionAfter());
+    const finalState = EditorState.forceSelection(updatedState, finalSelection);
 
     setEditorState(finalState);
     handleInputClose();
