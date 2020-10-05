@@ -52,10 +52,7 @@ const InlineStylesToolbar = ({ editorRoot, focusEditor }: Props) => {
 
   const _handleUrlInputClose = () => {
     setUrlOpen(false);
-    setTimeout(() => {
-      focusEditor();
-      // TODO -> handle SelectionState after focus to be able to keep writing without stopping (getSelectionAfter())
-    }, 0);
+    setTimeout(() => focusEditor(), 0);
   };
 
   return (
