@@ -12,6 +12,7 @@
     "@material-ui/core": "^4.10.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "cloudinary": "^1.23.0",
     "draft-js": "^0.11.6",
     "next": "latest",
     "react": "^16.12.0",

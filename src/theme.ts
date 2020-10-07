@@ -1,6 +1,17 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
+  palette: {
+    background: {
+      paper: '#F7F7F7',
+    },
+    primary: {
+      main: '#5d5d5d',
+      contrastText: '#FFFFFF',
+    },
+    contrastThreshold: 3,
+    tonalOffset: 0.2,
+  },
   typography: {
     body1: {
       fontFamily: 'Montserrat, sans-serif',
@@ -52,17 +63,6 @@ const theme = createMuiTheme({
       fontFamily: 'Montserrat, sans-serif',
       fontSize: '1.5rem',
     },
-  },
-  palette: {
-    background: {
-      paper: '#F7F7F7',
-    },
-    primary: {
-      main: '#5d5d5d',
-      contrastText: '#FFFFFF',
-    },
-    contrastThreshold: 3,
-    tonalOffset: 0.2,
   },
 });
 
