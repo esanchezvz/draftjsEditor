@@ -1,26 +1,49 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { IncomingForm, Fields, Files } from 'formidable';
+import { IncomingForm } from 'formidable';
+import sharp from 'sharp';
+import fs from 'fs';
+
 import { presets, uploadFile } from '../../utils/cloudinary.utils';
 
-// first we need to disable the default body parser
 export const config = {
   api: {
     bodyParser: false,
   },
 };
 
+// No validation or error handling since its just for testing editor
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  // parse form with a Promise wrapper
-  const data = await new Promise<{ fields: Fields; files: Files }>((resolve, reject) => {
-    const form = new IncomingForm();
+  try {
+    const tmpPath = await new Promise<string>((resolve, reject) => {
+      const form = new IncomingForm();
 
-    form.parse(req, (err, fields, files) => {
-      if (err) return reject(err);
-      resolve({ fields, files });
+      form.parse(req, async (err, _fields, files) => {
+        if (err) {
+          if (fs.existsSync(files.image.path)) fs.unlinkSync(files.image.path);
+          return reject(err);
+        }
+
+        const newPath = `./uploads/${Date.now()}_${files.image.name}`;
+
+        sharp.cache(false);
+        await sharp(files.image.path)
+          .rotate()
+          .resize()
+          .jpeg({ quality: 50, progressive: true })
+          .toFile(newPath);
+
+        if (fs.existsSync(files.image.path)) fs.unlinkSync(files.image.path);
+        resolve(newPath);
+      });
     });
-  });
+    const uploadedFile = await uploadFile(tmpPath, presets.draftjs);
 
-  const uploadedFile = await uploadFile(data?.files?.image.path, presets.draftjs);
+    // Delete tmpFile from server
+    if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
 
-  res.status(200).json({ success: true, data: uploadedFile });
+    res.status(200).json({ success: true, data: uploadedFile });
+  } catch (error) {
+    console.log(error);
+    res.status(200).json({ success: false, error });
+  }
 };
