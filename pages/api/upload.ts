@@ -26,7 +26,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const newPath = `./uploads/${Date.now()}_${files.image.name}`;
 
         sharp.cache(false);
-        await sharp(files.image.path)
+        await sharp(files.image.path) // compress images
           .rotate()
           .resize()
           .jpeg({ quality: 50, progressive: true })
