@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { ContentState, ContentBlock } from 'draft-js';
 
 import Tweet from './Tweet';
@@ -30,4 +31,4 @@ interface Props {
   blockProps?: any;
 }
 
-export default AtomicBlock;
+export default memo(AtomicBlock);

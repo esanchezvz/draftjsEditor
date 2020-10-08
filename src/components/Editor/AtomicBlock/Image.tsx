@@ -1,11 +1,7 @@
-import React from 'react';
-
-import Loading from './Loading';
+import React, { memo } from 'react';
 
 const Image = (props: any) => {
-  if (!props.url) {
-    return <Loading loading={!!props.url} />;
-  }
+  // console.log(props);
 
   // Not using props.url as src beacuase that much text will slow down de rerendering process
   // everytime editorState changes and rerenders the editor. maybe useMemo() or memo() would help?
@@ -14,11 +10,12 @@ const Image = (props: any) => {
     <div>
       <img
         style={{ width: '100%' }}
-        src={'https://wallpaperaccess.com/full/170249.jpg'}
+        src={props.url}
+        // src={'https://wallpaperaccess.com/full/170249.jpg'}
         alt='Some Alt Text'
       />
     </div>
   );
 };
 
-export default Image;
+export default memo(Image);

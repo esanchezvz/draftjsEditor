@@ -11,5 +11,9 @@ export const uploadImage = async (file: File) => {
     },
   };
 
-  return axios.post<ICloudinaryFileUploaded>('/api/upload', formData, config);
+  return axios.post<{ succes: boolean; data: ICloudinaryFileUploaded }>(
+    '/api/upload',
+    formData,
+    config,
+  );
 };

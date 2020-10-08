@@ -1,4 +1,5 @@
 import { ChangeEvent, useRef, useState } from 'react';
+import { AtomicBlockUtils, EditorState } from 'draft-js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
@@ -6,8 +7,7 @@ import AddImageIcon from '@material-ui/icons/AddPhotoAlternateOutlined';
 
 import BlockStylesToolbar from './BlockStylesToolbar';
 import ToolbarItem from './ToolbarItem';
-// import { useEditor } from '../../editor.context';
-// import { AtomicBlockUtils, EditorState } from 'draft-js';
+import { useEditor } from '../../editor.context';
 import { uploadImage } from '../../../utils';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Toolbar = () => {
-  // const { editorState, setEditorState } = useEditor();
+  const { editorState, setEditorState } = useEditor();
   const [inputKey, setInputKey] = useState(Date.now());
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -50,6 +50,20 @@ const Toolbar = () => {
       try {
         const response = await uploadImage(file);
         console.log(response.data);
+        const blockData = {
+          url: response.data.data.secure_url,
+          id: response.data.data.public_id,
+        };
+        setInputKey(Date.now()); // clear input files "the react way" -- needs improvement
+        const contentState = editorState.getCurrentContent();
+        const contentStateWithEntity = contentState.createEntity('image', 'IMMUTABLE', blockData);
+
+        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+        const newEditorState = EditorState.set(editorState, {
+          currentContent: contentStateWithEntity,
+        });
+
+        setEditorState(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '));
       } catch (error) {
         console.log(error);
       }
