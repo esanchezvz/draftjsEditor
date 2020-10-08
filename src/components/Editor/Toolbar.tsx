@@ -43,13 +43,12 @@ const Toolbar = () => {
   };
 
   const _handleInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    // const reader = new FileReader();
     const file = e.target.files![0]; // always the first file of the array
 
     if (file) {
       try {
         const response = await uploadImage(file);
-        console.log(response.data);
+        // console.log(response.data);
         const blockData = {
           url: response.data.data.secure_url,
           id: response.data.data.public_id,
@@ -67,31 +66,8 @@ const Toolbar = () => {
       } catch (error) {
         console.log(error);
       }
-      // reader.onloadend = async () => {
-      //   if (file.type.startsWith('image/')) {
-      //     const response = await uploadImage(reader.result as string);
-      //     setInputKey(Date.now()); // clear input files "the react way" -- needs improvement
-      //     const contentState = editorState.getCurrentContent();
-      //     const contentStateWithEntity = contentState.createEntity('image', 'IMMUTABLE', response);
-
-      //     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-      //     const newEditorState = EditorState.set(editorState, {
-      //       currentContent: contentStateWithEntity,
-      //     });
-
-      //     setEditorState(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '));
-      //   }
-      // };
-      // reader.readAsDataURL(file);
     }
   };
-
-  // Simulate api call to upload a file (e.g. upload to Cloudinary)
-  // const uploadImage = async (path: string): Promise<{ url: string; id: string }> => {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => resolve({ url: path, id: Date.now().toString() }), 3000);
-  //   });
-  // };
 
   return (
     <Paper elevation={0} className={classes.paper}>
