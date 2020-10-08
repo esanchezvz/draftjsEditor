@@ -1,6 +1,6 @@
 {
-  "name": "with-typescript",
-  "version": "1.0.0",
+  "name": "draftjs-editor",
+  "version": "0.1.0",
   "scripts": {
     "dev": "next",
     "build": "next build",
