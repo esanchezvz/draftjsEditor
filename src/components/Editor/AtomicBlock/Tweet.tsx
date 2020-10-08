@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { Tweet } from 'react-twitter-widgets';
-import SyncLoader from 'react-spinners/SyncLoader';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
-import { useTheme } from '@material-ui/core';
+
+import Loading from './Loading';
 
 const EmbeddedTweet = ({ tweetId }: { tweetId: string }) => {
-  // TODO -> Update theme dynamically
   const [loading, setLoading] = useState(true);
 
   return (
@@ -27,16 +26,6 @@ const EmbeddedTweet = ({ tweetId }: { tweetId: string }) => {
         }}
       />
     </>
-  );
-};
-
-const Loading = ({ loading }: { loading: boolean }) => {
-  const theme = useTheme();
-
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <SyncLoader color={theme.palette.primary.light} loading={loading} />
-    </div>
   );
 };
 

@@ -1,3 +1,4 @@
+import { ChangeEvent, useRef, useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
@@ -5,6 +6,9 @@ import AddImageIcon from '@material-ui/icons/AddPhotoAlternateOutlined';
 
 import BlockStylesToolbar from './BlockStylesToolbar';
 import ToolbarItem from './ToolbarItem';
+// import { useEditor } from '../../editor.context';
+// import { AtomicBlockUtils, EditorState } from 'draft-js';
+import { uploadImage } from '../../../utils';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,13 +29,70 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Toolbar = () => {
+  // const { editorState, setEditorState } = useEditor();
+  const [inputKey, setInputKey] = useState(Date.now());
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const classes = useStyles();
+
+  const _handleAddImage = () => {
+    const target = inputRef.current;
+    if (!target) return;
+
+    target.click();
+  };
+
+  const _handleInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    // const reader = new FileReader();
+    const file = e.target.files![0]; // always the first file of the array
+
+    if (file) {
+      try {
+        const response = await uploadImage(file);
+        console.log(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+      // reader.onloadend = async () => {
+      //   if (file.type.startsWith('image/')) {
+      //     const response = await uploadImage(reader.result as string);
+      //     setInputKey(Date.now()); // clear input files "the react way" -- needs improvement
+      //     const contentState = editorState.getCurrentContent();
+      //     const contentStateWithEntity = contentState.createEntity('image', 'IMMUTABLE', response);
+
+      //     const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+      //     const newEditorState = EditorState.set(editorState, {
+      //       currentContent: contentStateWithEntity,
+      //     });
+
+      //     setEditorState(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '));
+      //   }
+      // };
+      // reader.readAsDataURL(file);
+    }
+  };
+
+  // Simulate api call to upload a file (e.g. upload to Cloudinary)
+  // const uploadImage = async (path: string): Promise<{ url: string; id: string }> => {
+  //   return new Promise((resolve) => {
+  //     setTimeout(() => resolve({ url: path, id: Date.now().toString() }), 3000);
+  //   });
+  // };
 
   return (
     <Paper elevation={0} className={classes.paper}>
       <BlockStylesToolbar />
       <Divider flexItem orientation='vertical' className={classes.divider} />
-      <ToolbarItem icon={<AddImageIcon />} active={false} handleClick={() => {}} />
+      <ToolbarItem icon={<AddImageIcon />} active={false} handleClick={_handleAddImage} />
+      {/* TODO: Create HiddenInput component */}
+      <input
+        onChange={_handleInputChange}
+        key={inputKey}
+        ref={inputRef}
+        type='file'
+        accept='jpg,jpeg,png'
+        style={{ display: 'none' }}
+      />
     </Paper>
   );
 };

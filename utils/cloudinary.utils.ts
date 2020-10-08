@@ -1,38 +1,48 @@
 const cloudinary = require('cloudinary').v2;
 import fs from 'fs';
 
-const { CLOUDINARY_CLOUD, CLOUDINARY_KEY, CLOUDINARY_SECRET, CLOUDINARY_PRESET } = process.env;
-
 cloudinary.config({
-  cloud_name: CLOUDINARY_CLOUD,
-  api_key: CLOUDINARY_KEY,
-  api_secret: CLOUDINARY_SECRET,
+  cloud_name: process.env.CLOUDINARY_CLOUD,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
 });
 
 export const presets = {
-  draftjs: CLOUDINARY_PRESET as string,
+  draftjs: process.env.CLOUDINARY_PRESET!,
 };
 
-// This should be done through an API, not directly on the frontends
 export const uploadFile = (
-  filePath: string,
+  tempFilePath: string,
   uploadPreset: string,
 ): Promise<ICloudinaryFileUploaded> => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.unsigned_upload(
-      filePath,
+      tempFilePath,
       uploadPreset,
       {},
       (err: any, result: ICloudinaryFileUploaded) => {
         if (err) {
-          // console.log(err);
-          if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+          console.log(err);
+          if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
           reject({ ...err });
         }
 
         resolve(result);
       },
     );
+  });
+};
+
+export const deleteResources = (publicIds: string[]): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    cloudinary.api.delete_resources(publicIds, function (err: any) {
+      if (err) {
+        console.log(err);
+        reject({ ...err });
+      }
+
+      resolve();
+    });
   });
 };
 
