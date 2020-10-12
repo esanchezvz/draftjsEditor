@@ -1,5 +1,4 @@
-import { ChangeEvent, useRef, useState } from 'react';
-// import { AtomicBlockUtils, EditorState } from 'draft-js';
+import { ChangeEvent, useRef } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
@@ -31,7 +30,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Toolbar = () => {
   const { editorState, setEditorState } = useEditor();
-  const [inputKey, setInputKey] = useState(Date.now());
   const inputRef = useRef<HTMLInputElement>(null);
 
   const classes = useStyles();
@@ -58,9 +56,11 @@ const Toolbar = () => {
           url: res.data.secure_url,
           public_id: res.data.public_id,
         };
-        setInputKey(Date.now()); // clear input files "the react way" -- needs improvement
 
-        // Pass the same contentState as loader so the loading indicator gets replaced
+        // Clear input files
+        if (inputRef.current) inputRef.current.value = '';
+
+        // Pass the same contentState as when adding loader so the loading indicator gets replaced
         insertAtomicBlock('image', blockData, editorState, setEditorState, contentState);
       } catch (error) {
         console.log(error);
@@ -76,7 +76,6 @@ const Toolbar = () => {
       {/* TODO: Create HiddenInput component */}
       <input
         onChange={_handleInputChange}
-        key={inputKey}
         ref={inputRef}
         type='file'
         accept='jpg,jpeg,png'
