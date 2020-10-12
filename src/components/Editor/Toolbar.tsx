@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const Toolbar = () => {
-  const { editorState, setEditorState } = useEditor();
+const Toolbar = ({ focusEditor }: Props) => {
+  const { editorState, setEditorState, setReadOnly } = useEditor();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const classes = useStyles();
@@ -49,6 +49,7 @@ const Toolbar = () => {
         const contentState = editorState.getCurrentContent();
 
         insertAtomicBlock('loader', {}, editorState, setEditorState, contentState);
+        setReadOnly(true);
 
         const response = await uploadImage(file);
         const { data: res } = response;
@@ -62,6 +63,8 @@ const Toolbar = () => {
 
         // Pass the same contentState as when adding loader so the loading indicator gets replaced
         insertAtomicBlock('image', blockData, editorState, setEditorState, contentState);
+        setReadOnly(false);
+        setTimeout(focusEditor, 0);
       } catch (error) {
         console.log(error);
       }
@@ -84,5 +87,9 @@ const Toolbar = () => {
     </Paper>
   );
 };
+
+interface Props {
+  focusEditor: () => void;
+}
 
 export default Toolbar;

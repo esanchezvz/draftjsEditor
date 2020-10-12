@@ -27,7 +27,7 @@ const Editor: React.FC = () => {
   const editorRef = useRef<RichTextEditor>(null);
   const editorRootRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
-  const { editorState, setEditorState } = useEditor();
+  const { editorState, setEditorState, readOnly } = useEditor();
 
   const _focusEditor = () => editorRef.current!.focus();
 
@@ -128,10 +128,11 @@ const Editor: React.FC = () => {
 
   return mounted ? (
     <div className={className} ref={editorRootRef}>
-      <Toolbar />
+      <Toolbar focusEditor={_focusEditor} />
       <RichTextEditor
         editorState={editorState}
         onChange={setEditorState}
+        readOnly={readOnly}
         blockStyleFn={_getBlockStyle}
         handleKeyCommand={_handleKeyCommand}
         keyBindingFn={_mapKeyToEditorCommand}
