@@ -44,7 +44,7 @@ interface Props {
     isFocused: boolean;
     key: string;
     onClickDelete: (key: string, length: number) => {};
-    block: any; // TODO: get correct type
+    block: any;
   };
 }
 
