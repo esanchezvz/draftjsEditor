@@ -5,11 +5,19 @@ import Tweet from './Tweet';
 import Youtube from './Youtube';
 import Image from './Image';
 import Loading from './Loading';
+import RemoveMediaContainer from './RemoveMediaContainer';
 
-const AtomicBlock = ({ block, contentState }: Props) => {
+const AtomicBlock = ({ block, contentState, blockProps }: Props) => {
   const entity = contentState.getEntity(block.getEntityAt(0));
   const data = entity.getData();
   const type = entity.getType();
+
+  // console.log(blockProps);
+
+  const _handleDelete = () => {
+    const { onClickDelete, key } = blockProps!;
+    onClickDelete(key, block.getLength());
+  };
 
   switch (type) {
     case 'tweet':
@@ -17,7 +25,11 @@ const AtomicBlock = ({ block, contentState }: Props) => {
     case 'youtube':
       return <Youtube videoId={data.videoId} />;
     case 'image':
-      return <Image {...data} />;
+      return (
+        <RemoveMediaContainer handleClick={_handleDelete}>
+          <Image {...data} />
+        </RemoveMediaContainer>
+      );
     case 'loader':
       return <Loading loading />;
     default:
@@ -28,7 +40,12 @@ const AtomicBlock = ({ block, contentState }: Props) => {
 interface Props {
   contentState: ContentState;
   block: ContentBlock;
-  blockProps?: any;
+  blockProps?: {
+    isFocused: boolean;
+    key: string;
+    onClickDelete: (key: string, length: number) => {};
+    block: any; // TODO: get correct type
+  };
 }
 
 export default memo(AtomicBlock);

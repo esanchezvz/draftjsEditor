@@ -32,11 +32,29 @@ const Editor: React.FC = () => {
   const _focusEditor = () => editorRef.current!.focus();
 
   const _blockRendererFn = (contentBlock: ContentBlock) => {
-    if (contentBlock.getType() !== 'atomic') return null;
+    const type = contentBlock.getType();
+    const focusKey = editorState.getSelection().getFocusKey();
+    const blockKey = contentBlock.getKey();
+    if (type !== 'atomic') return null;
+
+    const removeEditorMedia = (key: string, _length: number) => {
+      let selectKey = contentState.getKeyAfter(key) || contentState.getKeyBefore(key);
+      console.log(selectKey);
+    };
+
+    const props = {
+      text: contentBlock.getText(),
+      key: contentBlock.getKey(),
+      data: contentBlock.getData(),
+      isFocused: focusKey === blockKey,
+      onClickDelete: removeEditorMedia,
+      direction: 'LTR',
+    };
 
     return {
       component: AtomicBlock,
       editable: false,
+      props,
     };
   };
 

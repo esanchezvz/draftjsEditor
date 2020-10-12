@@ -1,4 +1,4 @@
-import { AtomicBlockUtils, ContentState, EditorState } from 'draft-js';
+import { AtomicBlockUtils, ContentState, EditorState, SelectionState } from 'draft-js';
 import { Dispatch, SetStateAction } from 'react';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
@@ -47,32 +47,14 @@ export const getCurrentEntity = (editorState: EditorState) => {
   return null;
 };
 
-export const getEntities = (editorState: EditorState, entityType: string | null = null) => {
-  const content = editorState.getCurrentContent();
-  const entities: any = [];
-  content.getBlocksAsArray().forEach((block) => {
-    let selectedEntity: any = null;
-    block.findEntityRanges(
-      (character) => {
-        if (character.getEntity() !== null) {
-          const entity = content.getEntity(character.getEntity());
-          if (!entityType || (entityType && entity.getType() === entityType)) {
-            selectedEntity = {
-              entityKey: character.getEntity(),
-              blockKey: block.getKey(),
-              entity: content.getEntity(character.getEntity()),
-            };
-            return true;
-          }
-        }
-        return false;
-      },
-      (start, end) => {
-        entities.push({ ...selectedEntity, start, end });
-      },
-    );
+export const createSelectionWithFocus = (key: string) => {
+  return new SelectionState({
+    anchorKey: key,
+    anchorOffset: 0,
+    focusKey: key,
+    focusOffset: 0,
+    hasFocus: true,
   });
-  return entities;
 };
 
 export const insertAtomicBlock = (
