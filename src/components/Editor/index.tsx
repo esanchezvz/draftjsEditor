@@ -71,12 +71,17 @@ const Editor: React.FC = () => {
   };
 
   const _mapKeyToEditorCommand = (e: React.KeyboardEvent) => {
-    if (e.keyCode === 9) {
+    if (e.key === 'Tab') {
       const newEditorState = RichUtils.onTab(e, editorState, 2 /* Max Indentation Depth */);
       if (newEditorState !== editorState) {
         setEditorState(newEditorState);
       }
       return null;
+    }
+
+    if (e.key === 'Backspace') {
+      // TODO: handle removing images
+      console.log(e.key);
     }
     return getDefaultKeyBinding(e);
   };
