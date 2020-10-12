@@ -46,7 +46,6 @@ const Toolbar = () => {
   const _handleInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0]; // always the first file of the array
 
-    // TODO: Needs a lot of refactoring
     if (file) {
       try {
         const contentState = editorState.getCurrentContent();
