@@ -13,6 +13,7 @@ import {
 import {
   handleTextSelection,
   insertAtomicBlock,
+  removeMedia,
   twitterRegex,
   youtubeRegex,
 } from '../../utils/editor.utils';
@@ -31,16 +32,16 @@ const Editor: React.FC = () => {
 
   const _focusEditor = () => editorRef.current!.focus();
 
+  const removeEditorMedia = (key: string, _length: number) => {
+    const updatedEditorState = removeMedia(key, editorState, length);
+    setEditorState(updatedEditorState);
+  };
+
   const _blockRendererFn = (contentBlock: ContentBlock) => {
     const type = contentBlock.getType();
     const focusKey = editorState.getSelection().getFocusKey();
     const blockKey = contentBlock.getKey();
     if (type !== 'atomic') return null;
-
-    const removeEditorMedia = (key: string, _length: number) => {
-      let selectKey = contentState.getKeyAfter(key) || contentState.getKeyBefore(key);
-      console.log(selectKey);
-    };
 
     const props = {
       text: contentBlock.getText(),

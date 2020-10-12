@@ -1,4 +1,4 @@
-import { AtomicBlockUtils, ContentState, EditorState, SelectionState } from 'draft-js';
+import { AtomicBlockUtils, ContentState, EditorState, SelectionState, Modifier } from 'draft-js';
 import { Dispatch, SetStateAction } from 'react';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
@@ -55,6 +55,37 @@ export const createSelectionWithFocus = (key: string) => {
     focusOffset: 0,
     hasFocus: true,
   });
+};
+
+export const removeMedia = (key: string, editorState: EditorState, length: number) => {
+  const contentState = editorState.getCurrentContent();
+  const selectKey = contentState.getKeyAfter(key) || contentState.getKeyBefore(key);
+
+  const selection = createSelectionWithFocus(selectKey);
+
+  const newSelectionStateOptions = {
+    anchorKey: key,
+    anchorOffset: 0,
+    focusKey: key,
+    focusOffset: length ? length : undefined,
+  };
+
+  const withoutAtomicEntity: any = Modifier.removeRange(
+    contentState,
+    new SelectionState(newSelectionStateOptions),
+    'backward',
+  );
+
+  const blockMap = withoutAtomicEntity.getBlockMap().delete(key);
+
+  const withoutAtomic = withoutAtomicEntity.merge({
+    blockMap,
+    selectionAfter: selection,
+  });
+
+  const newEditorState = EditorState.push(editorState, withoutAtomic, 'remove-range');
+
+  return newEditorState;
 };
 
 export const insertAtomicBlock = (
