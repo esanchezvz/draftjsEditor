@@ -31,7 +31,7 @@ export const EditorProvider: React.FC = ({ children }) => {
   const providerValue = useMemo(() => ({ editorState, setEditorState }), [editorState]);
 
   useEffect(() => {
-    // console.log(convertToRaw(editorState.getCurrentContent()));
+    console.log(convertToRaw(editorState.getCurrentContent()));
   }, [editorState]);
 
   return <EditorContext.Provider value={providerValue}>{children}</EditorContext.Provider>;

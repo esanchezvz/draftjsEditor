@@ -45,16 +45,31 @@ const Toolbar = () => {
   const _handleInputChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0]; // always the first file of the array
 
+    // TODO: Needs a lot of refactoring
     if (file) {
       try {
+        const contentState = editorState.getCurrentContent();
+        const contentStateWithLoader = contentState.createEntity('loader', 'IMMUTABLE', {});
+
+        const newStateWithLoader = EditorState.set(editorState, {
+          currentContent: contentStateWithLoader,
+        });
+
+        setEditorState(
+          AtomicBlockUtils.insertAtomicBlock(
+            newStateWithLoader,
+            contentStateWithLoader.getLastCreatedEntityKey(),
+            ' ',
+          ),
+        );
+
         const response = await uploadImage(file);
-        // console.log(response.data);
+        const { data: res } = response;
         const blockData = {
-          url: response.data.data.secure_url,
-          id: response.data.data.public_id,
+          url: res.data.secure_url,
+          public_id: res.data.public_id,
         };
         setInputKey(Date.now()); // clear input files "the react way" -- needs improvement
-        const contentState = editorState.getCurrentContent();
         const contentStateWithEntity = contentState.createEntity('image', 'IMMUTABLE', blockData);
 
         const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
