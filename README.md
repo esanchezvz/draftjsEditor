@@ -2,10 +2,32 @@
 
 This project is using draft-js, hooks and context API to create a simple, reusable RichTextEditor for a React application using material-ui.
 
-## TODO
+## Development
+To run this project you will need to have `node: >=10` installed on your machine. It probably won't run if you have a previous version installed.
+
+- Clone or fork this repo.
+- Instal dependencies - you can run `yarn` or `npm i` to install all dependencies.
+- Run `yarn dev` or `npm run dev` to start your development server.
+
+<small>
+**NOTE** - If you want to be able to upload images to cloudinary you will have to create a file called `.env.local` at the root of this project. Once you created this file, you will have to add the following:
+</small>
+
+
+```
+CLOUDINARY_CLOUD=<cloudinary-cloudname>
+CLOUDINARY_KEY=<cloudinary-api-key>
+CLOUDINARY_SECRET=<cloudinary-secret>
+CLOUDINARY_PRESET=<upload-preset-name> 
+ ``` 
+<small>
+ For `CLOUDINARY_PRESET`you have to create an unsigned upload preset from your cloudinary project settings.
+</small>
+
+### TODO
 - [x] Create inline styles
 - [x] Create block styles
-- [x] Make inline styles toolbar appear when selected text.
+- [x] Make inline styles toolbar appear when selected text
 - [x] Add link to content from inline styles toolbar
 - [x] Embed youtube videos and tweets  
 - [x] Upload images to CLoudinary
