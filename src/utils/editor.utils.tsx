@@ -1,4 +1,4 @@
-import { AtomicBlockUtils, EditorState } from 'draft-js';
+import { AtomicBlockUtils, ContentState, EditorState } from 'draft-js';
 import { Dispatch, SetStateAction } from 'react';
 import FormatBoldIcon from '@material-ui/icons/FormatBold';
 import FormatItalicIcon from '@material-ui/icons/FormatItalic';
@@ -76,12 +76,13 @@ export const getEntities = (editorState: EditorState, entityType: string | null 
 };
 
 export const insertAtomicBlock = (
-  type: string,
+  type: 'image' | 'loader' | 'tweet' | 'youtube',
   data: any,
   editorState: EditorState,
   setEditorState: Dispatch<SetStateAction<EditorState>>,
+  _contentState?: ContentState,
 ) => {
-  const contentState = editorState.getCurrentContent();
+  const contentState = _contentState || editorState.getCurrentContent();
   const contentStateWithEntity = contentState.createEntity(type, 'IMMUTABLE', data);
 
   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();

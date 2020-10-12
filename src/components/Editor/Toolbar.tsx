@@ -1,5 +1,5 @@
 import { ChangeEvent, useRef, useState } from 'react';
-import { AtomicBlockUtils, EditorState } from 'draft-js';
+// import { AtomicBlockUtils, EditorState } from 'draft-js';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Paper from '@material-ui/core/Paper';
@@ -9,6 +9,7 @@ import BlockStylesToolbar from './BlockStylesToolbar';
 import ToolbarItem from './ToolbarItem';
 import { useEditor } from '../../editor.context';
 import { uploadImage } from '../../../utils';
+import { insertAtomicBlock } from '../../utils/editor.utils';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,19 +50,8 @@ const Toolbar = () => {
     if (file) {
       try {
         const contentState = editorState.getCurrentContent();
-        const contentStateWithLoader = contentState.createEntity('loader', 'IMMUTABLE', {});
 
-        const newStateWithLoader = EditorState.set(editorState, {
-          currentContent: contentStateWithLoader,
-        });
-
-        setEditorState(
-          AtomicBlockUtils.insertAtomicBlock(
-            newStateWithLoader,
-            contentStateWithLoader.getLastCreatedEntityKey(),
-            ' ',
-          ),
-        );
+        insertAtomicBlock('loader', {}, editorState, setEditorState, contentState);
 
         const response = await uploadImage(file);
         const { data: res } = response;
@@ -70,14 +60,9 @@ const Toolbar = () => {
           public_id: res.data.public_id,
         };
         setInputKey(Date.now()); // clear input files "the react way" -- needs improvement
-        const contentStateWithEntity = contentState.createEntity('image', 'IMMUTABLE', blockData);
 
-        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-        const newEditorState = EditorState.set(editorState, {
-          currentContent: contentStateWithEntity,
-        });
-
-        setEditorState(AtomicBlockUtils.insertAtomicBlock(newEditorState, entityKey, ' '));
+        // Pass the same contentState as loader so the loading indicator gets replaced
+        insertAtomicBlock('image', blockData, editorState, setEditorState, contentState);
       } catch (error) {
         console.log(error);
       }
