@@ -1,21 +1,16 @@
 import React, { memo } from 'react';
 
-const Image = (props: any) => {
-  // console.log(props);
-
-  // Not using props.url as src beacuase that much text will slow down de rerendering process
-  // everytime editorState changes and rerenders the editor. maybe useMemo() or memo() would help?
-
+const Image = ({ url }: Props) => {
   return (
     <div>
-      <img
-        style={{ width: '100%' }}
-        src={props.url}
-        // src={'https://wallpaperaccess.com/full/170249.jpg'}
-        alt='Some Alt Text'
-      />
+      <img style={{ width: '100%' }} src={url} alt='' />
     </div>
   );
 };
+
+interface Props {
+  url: string;
+  publicId: string;
+}
 
 export default memo(Image);
